@@ -7,8 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Guild {
-  guildID String @id
+model Setting {
+  id Int @id @default(1)
 
   activityType ActivityTextType @default(Playing)
   activityName String
@@ -25,9 +25,15 @@ enum ActivityTextType {
   Competing
 }
 
-model User {
-  discordID  String @id
-  discordTag String
+model Guild {
+  guildID String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Repost {
+  cuid String @id
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
