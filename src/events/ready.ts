@@ -11,10 +11,37 @@ const event: BotEvent = {
         );
 
         // sets the bot activity
-        await client.user!.setActivity({
-            name: `scammers cry 📸`,
-            type: ActivityType.Watching
+        const setting = await client.prisma.setting.findUnique({
+            where: {
+                id: 1
+            }
         });
+
+        if (setting) {
+            let activity;
+            switch (setting.activityType) {
+                case "Playing":
+                    activity = ActivityType.Playing;
+                    break;
+                case "Streaming":
+                    activity = ActivityType.Streaming;
+                    break;
+                case "Listening":
+                    activity = ActivityType.Listening;
+                    break;
+                case "Watching":
+                    activity = ActivityType.Watching;
+                    break;
+                case "Competing":
+                    activity = ActivityType.Competing;
+                    break;
+            }
+
+            await client.user!.setActivity({
+                name: setting.activityName,
+                type: activity
+            });
+        }
     }
 };
 
