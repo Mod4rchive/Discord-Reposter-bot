@@ -35,26 +35,29 @@ model Guild {
 }
 
 model Repost {
-  cuid String @id @default(cuid())
+  cuid   String  @id @default(cuid())
+  active Boolean @default(true)
 
-  active Boolean
+  allowUsers    Boolean @default(true)
+  allowBots     Boolean @default(true)
+  allowWebhooks Boolean @default(true)
 
-  allowContent     Boolean
-  allowEmbeds      Boolean
-  allowAttachments Boolean
-  allowComponents  Boolean
+  allowContent     Boolean @default(true)
+  allowEmbeds      Boolean @default(true)
+  allowAttachments Boolean @default(true)
+  allowComponents  Boolean @default(true)
 
-  delay       Int
-  mentions    String
-  pinMessages Boolean
+  delay       Int     @default(0)
+  mentions    String  @default("")
+  pinMessages Boolean @default(true)
 
   sourceChannelID String
   sourceGuildID   String
   guild           Guild  @relation(fields: [sourceGuildID], references: [guildID], onDelete: Cascade)
 
-  destinationType       DestinationType
-  destionationChannelID String?
-  destinationGuildID    String?
+  destinationType      DestinationType
+  destinationChannelID String?
+  destinationGuildID   String?
 
   destinationWebhookURL String?
 
@@ -72,8 +75,8 @@ model Replacement {
   find    String @unique
   replace String
 
-  Repost     Repost? @relation(fields: [repostCUID], references: [cuid], onDelete: Cascade)
-  repostCUID String?
+  repost     Repost? @relation(fields: [repostCUID], references: [cuid], onDelete: Cascade)
+  repostCUID String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
