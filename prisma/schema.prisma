@@ -25,15 +25,6 @@ enum ActivityTextType {
   Competing
 }
 
-model Guild {
-  guildID String @id
-
-  reposts Repost[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Repost {
   cuid   String  @id @default(cuid())
   active Boolean @default(true)
@@ -49,11 +40,10 @@ model Repost {
 
   delay       Int     @default(0)
   mentions    String  @default("")
-  pinMessages Boolean @default(true)
+  pinMessages Boolean @default(false)
 
   sourceChannelID String
   sourceGuildID   String
-  guild           Guild  @relation(fields: [sourceGuildID], references: [guildID], onDelete: Cascade)
 
   destinationType      DestinationType
   destinationChannelID String?
