@@ -20,7 +20,7 @@ const command: SlashCommand = {
 
         let text = ``;
         for (const repost of reposts) {
-            text += `\n ${channelMention(repost.sourceChannelID)} - ${inlineCode(repost.cuid)}`;
+            text += `\n${channelMention(repost.sourceChannelID)} - ${inlineCode(repost.cuid)}`;
         }
         await interaction.editReply({ content: text });
     }

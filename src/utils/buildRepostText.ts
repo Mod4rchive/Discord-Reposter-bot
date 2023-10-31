@@ -29,7 +29,7 @@ export default function buildRepostText(repost: Repost, replacements: Replacemen
     text += `
 **Delay:** \`${repost.delay} seconds\`
 **Mention:** ${repost.mentions}
-**Pin Messages:** ${truthy(repost.pinMessages)}\n\n**Replacements:**`;
+**Pin Messages:** ${truthy(repost.pinMessages)}\n\n**Replacements:**\n`;
 
     for (const replacement of replacements) {
         text += `- ${inlineCode(replacement.find)} -> ${inlineCode(replacement.replace)}`;
