@@ -9,7 +9,7 @@ export default function buildRepostText(repost: Repost, replacements: Replacemen
     let text = `
 **Repost ID:** ${inlineCode(repost.cuid)}
 **Source Guild ID:** ${inlineCode(repost.sourceGuildID)}
-*Source Channel ID:** ${inlineCode(repost.sourceChannelID)}\n`;
+**Source Channel ID:** ${inlineCode(repost.sourceChannelID)}\n`;
     if (repost.destinationType == "channel") {
         text += `
 **Destination Guild ID:** ${inlineCode(repost.destinationGuildID!)}
@@ -29,7 +29,7 @@ export default function buildRepostText(repost: Repost, replacements: Replacemen
     text += `
 **Delay:** \`${repost.delay} seconds\`
 **Mention:** ${repost.mentions}
-**Pin Messages:** ${truthy(repost.pinMessages)}\n**Replacements:**`;
+**Pin Messages:** ${truthy(repost.pinMessages)}\n\n**Replacements:**`;
 
     for (const replacement of replacements) {
         text += `- ${inlineCode(replacement.find)} -> ${inlineCode(replacement.replace)}`;
