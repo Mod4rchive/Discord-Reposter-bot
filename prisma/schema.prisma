@@ -38,9 +38,11 @@ model Repost {
   allowAttachments Boolean @default(true)
   allowComponents  Boolean @default(true)
 
-  delay       Int     @default(0)
-  mentions    String  @default("")
-  pinMessages Boolean @default(false)
+  delay         Int     @default(0)
+  mentions      String  @default("")
+  pinMessages   Boolean @default(false)
+  nickname      Boolean @default(false)
+  deleteMessage Boolean @default(false)
 
   sourceChannelID String
   sourceGuildID   String

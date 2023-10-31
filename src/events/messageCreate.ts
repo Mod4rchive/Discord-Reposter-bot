@@ -7,7 +7,9 @@ import {
     Message,
     MessageActionRowComponent,
     TextChannel,
-    WebhookClient
+    WebhookClient,
+    bold,
+    userMention
 } from "discord.js";
 import { BotEvent } from "../types";
 import { delay } from "../utils/delay";
@@ -61,6 +63,13 @@ const event: BotEvent = {
                             content = content.replace(replacement.find, replacement.replace);
                         }
 
+                        // add nickname for webhook messages
+                        if (repost.nickname && message.webhookId) {
+                            const webhook = await message.fetchWebhook();
+                            const nickname = `${bold(webhook.name)}`;
+                            content = `${nickname}\n${content}`;
+                        }
+
                         if (repost.destinationType == "channel") {
                             // establish destination
                             const guild = await client.guilds.fetch(repost.destinationGuildID!);
@@ -68,6 +77,18 @@ const event: BotEvent = {
 
                             const channel = (await guild.channels.fetch(repost.destinationChannelID!)) as TextChannel;
                             if (!channel) throw Error("invalid channel");
+
+                            // add nickname for member messages
+                            if (repost.nickname && !message.webhookId) {
+                                const member = await guild.members.fetch(message.author.id);
+                                if (member) {
+                                    const nickname = `${userMention(member.id)}`;
+                                    content = `${nickname}\n${content}`;
+                                } else {
+                                    const nickname = `${bold(message.member!.displayName)}`;
+                                    content = `${nickname}\n${content}`;
+                                }
+                            }
 
                             let msg: Message;
                             if (content == "") {
@@ -80,11 +101,21 @@ const event: BotEvent = {
                             // establish destination
                             const webhook = new WebhookClient({ url: repost.destinationWebhookURL! });
 
+                            // add nickname for member messages
+                            if (repost.nickname && !message.webhookId) {
+                                const nickname = `${bold(message.member!.displayName)}`;
+                                content = `${nickname}\n${content}`;
+                            }
+
                             if (content == "") {
                                 await webhook.send({ components, embeds, files });
                             } else {
                                 await webhook.send({ content, components, embeds, files });
                             }
+                        }
+
+                        if (repost.deleteMessage && message.deletable) {
+                            await message.delete().catch(console.error);
                         }
                         return resolve();
                     } catch (err) {

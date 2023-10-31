@@ -24,9 +24,10 @@ In order to work with this bot, one needs sufficient knowledge in Javascript/ Ty
 
 -   Save the `TOKEN` and `APPLICATION ID` from the portal, as this will be used later
 
-3. Create a bot with the following scopes and permissions
+3. Create a bot with the following scopes and permissions\*
    ![scopes](public/scopes.png)
    ![perms](public/perms.png)
+   \*ensure that the bot has `MANAGE_MESSAGES` and `MANAGE_WEBHOOKS` perms as they are needed for the bot features
 4. Use the generated invite link and add the bot with the permissions in your desired discord servers
 
 ### Database

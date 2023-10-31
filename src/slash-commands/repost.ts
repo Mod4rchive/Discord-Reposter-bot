@@ -153,6 +153,31 @@ const command: SlashCommand = {
         )
         .addSubcommand(
             new SlashCommandSubcommandBuilder()
+                .setName(`update_nickname`)
+                .setDescription(`change nickname settings in repost configuration`)
+                .addStringOption((option) =>
+                    option.setName("repost_id").setDescription("the repost id").setRequired(true)
+                )
+                .addBooleanOption((option) =>
+                    option
+                        .setName("nickname")
+                        .setDescription("add nickname of message author to reposted message")
+                        .setRequired(true)
+                )
+        )
+        .addSubcommand(
+            new SlashCommandSubcommandBuilder()
+                .setName(`update_delete`)
+                .setDescription(`change delete settings in repost configuration`)
+                .addStringOption((option) =>
+                    option.setName("repost_id").setDescription("the repost id").setRequired(true)
+                )
+                .addBooleanOption((option) =>
+                    option.setName("delete").setDescription("delete original message").setRequired(true)
+                )
+        )
+        .addSubcommand(
+            new SlashCommandSubcommandBuilder()
                 .setName(`create_replacement`)
                 .setDescription(`add content replacement in repost configuration`)
                 .addStringOption((option) =>
@@ -473,6 +498,66 @@ const command: SlashCommand = {
                 where: { cuid, sourceGuildID: interaction.guildId! },
                 data: {
                     pinMessages
+                }
+            });
+            const content = `${userMention(interaction.user.id)} updated a repost configuration: ${inlineCode(cuid)}`;
+            await interaction.editReply({ content });
+            await log({ title: "Repost Updated", color: "Yellow", content });
+        } else if (subcommand == "update_nickname") {
+            const cuid = interaction.options.getString("repost_id", true);
+            const repost = await interaction.client.prisma.repost.findUnique({
+                where: {
+                    cuid,
+                    sourceGuildID: interaction.guildId!
+                }
+            });
+
+            if (!repost) {
+                await interaction.editReply({
+                    content: `${cuid} is an invalid repost`
+                });
+                setTimeout(async () => {
+                    await interaction.deleteReply().catch(console.error);
+                }, 3 * 1000);
+                return;
+            }
+
+            const nickname = await interaction.options.getBoolean("nickname", true);
+
+            await interaction.client.prisma.repost.update({
+                where: { cuid, sourceGuildID: interaction.guildId! },
+                data: {
+                    nickname
+                }
+            });
+            const content = `${userMention(interaction.user.id)} updated a repost configuration: ${inlineCode(cuid)}`;
+            await interaction.editReply({ content });
+            await log({ title: "Repost Updated", color: "Yellow", content });
+        } else if (subcommand == "update_delete") {
+            const cuid = interaction.options.getString("repost_id", true);
+            const repost = await interaction.client.prisma.repost.findUnique({
+                where: {
+                    cuid,
+                    sourceGuildID: interaction.guildId!
+                }
+            });
+
+            if (!repost) {
+                await interaction.editReply({
+                    content: `${cuid} is an invalid repost`
+                });
+                setTimeout(async () => {
+                    await interaction.deleteReply().catch(console.error);
+                }, 3 * 1000);
+                return;
+            }
+
+            const deleteMessage = await interaction.options.getBoolean("delete", true);
+
+            await interaction.client.prisma.repost.update({
+                where: { cuid, sourceGuildID: interaction.guildId! },
+                data: {
+                    deleteMessage
                 }
             });
             const content = `${userMention(interaction.user.id)} updated a repost configuration: ${inlineCode(cuid)}`;
