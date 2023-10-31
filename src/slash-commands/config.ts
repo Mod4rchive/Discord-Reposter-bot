@@ -65,7 +65,7 @@ const command: SlashCommand = {
                 interaction.client.user.id
             )}'s username to ${inlineCode(username)}`;
             await interaction.editReply({ content });
-            await log({ title: "Username Changed", color: Colors.Red, description: content });
+            await log({ title: "Username Changed", color: Colors.Red, content });
         } else if (subcommand == "status") {
             const type = interaction.options.getString("activity_type", true) as ActivityTextType;
             const name = interaction.options.getString("activity_name", true);
@@ -110,7 +110,7 @@ const command: SlashCommand = {
                 interaction.client.user.id
             )}'s status to ${inlineCode(type + " " + name)}`;
             await interaction.editReply({ content });
-            await log({ title: "Status Changed", color: Colors.Red, description: content });
+            await log({ title: "Status Changed", color: Colors.Red, content });
         } else if (subcommand == "avatar") {
             const avatar = interaction.options.getAttachment("avatar", true);
 
@@ -120,7 +120,7 @@ const command: SlashCommand = {
                 interaction.client.user.id
             )}'s avatar`;
             await interaction.editReply({ content });
-            await log({ title: "Avatar Changed", color: Colors.Red, description: content });
+            await log({ title: "Avatar Changed", color: Colors.Red, content });
         }
     }
 };

@@ -3,16 +3,16 @@ import trimString from "./trimString";
 
 type LogPayload = {
     title: string;
-    description: string;
+    content: string;
     color?: ColorResolvable;
 };
 
-export default async function log({ title, description, color }: LogPayload) {
+export default async function log({ title, content, color }: LogPayload) {
     return new Promise<void>(async (resolve, reject) => {
         try {
             const logsUrl = process.env.LOGS_URL;
             const webhookClient = new WebhookClient({ url: logsUrl });
-            const trimmedDescription = trimString(description, 4000);
+            const trimmedDescription = trimString(content, 4000);
             const embed = new EmbedBuilder()
                 .setTitle(title)
                 .setDescription(trimmedDescription)
