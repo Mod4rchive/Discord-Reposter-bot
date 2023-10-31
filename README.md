@@ -38,7 +38,9 @@ In order to work with this bot, one needs sufficient knowledge in Javascript/ Ty
 -   Deploy it via Docker:
 
 ```bash
-docker run --name reposter-db -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+docker network create reposter
+docker run --name reposter-db -e --network=reposter POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+docker network inspect reposter // get ip address of container
 ```
 
 2. Save `DATABASE_URL` in the `.env`
@@ -75,6 +77,8 @@ pnpm db-studio
 pnpm dev
 ```
 
+6. Once testing is done, run bot via docker command
+
 ## How it works
 
 The bot sets up **repost configurations** that dictate a repost setup from a _source_ (a text channel) to a _destination_ (such as text channel from same or different server OR a discord webhook). There can be multiple repost configurations, allowing complex setups of `CHANNEL_A` -> `CHANNEL_B` reposting
@@ -85,21 +89,23 @@ The project leverages the [messageCreate](https://discord.js.org/#/docs/discord.
 
 ## Commands
 
-| Command                                                                      | Description                                                             |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| /channelinfo                                                                 | get guild ID and channel ID for this channel                            |
-| /webhook                                                                     | creates a webhook in this channel                                       |
-| /reposts                                                                     | view repost configurations in this server                               |
-| /repost view [repost_id]                                                     | view a repost configuration                                             |
-| /repost add_channel [src_channel] [des_guild] [des_guild]                    | add a repost configuration (send to a channel)                          |
-| /repost add_webhook [src_channel] [des_webhook]                              | add a repost configuration (send to a webhook)                          |
-| /repost remove [repost_id]                                                   | remove a repost configuration                                           |
-| /repost enable [repost_id]                                                   | enable a repost configuration (if it is disabled)                       |
-| /repost disable [repost_id]                                                  | temporary disable a repost configuration                                |
-| /repost update_source_allows [repost_id] [users] [bots] [webhooks]           | allow reposting of messages from users/bots/webhooks                    |
-| /repost update_source_allows [repost_id] [embeds] [components] [attachments] | include embeds/components/attachments in reposts                        |
-| /repost update_delay [repost_id] [delay]                                     | adds a delay before sending repost to destination (0 = realtime repost) |
-| /repost update_mentions [repost_id] [mentions]                               | use this to add a mention (such as role or user) for reposted messages  |
-| /repost update_pin [repost_id] [pin]                                         | pin reposted messages (not available for webhooks)                      |
-| /repost create_replacement [repost_id] [find] [replace]                      | find and replace the chosen find substring from message content         |
-| /repost delete_replacement [repost_id] [find]                                | delete replacement config                                               |
+| Command                                                                      | Description                                                                |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| /channelinfo                                                                 | get guild ID and channel ID for this channel                               |
+| /webhook                                                                     | creates a webhook in this channel                                          |
+| /reposts                                                                     | view repost configurations in this server                                  |
+| /repost view [repost_id]                                                     | view a repost configuration                                                |
+| /repost add_channel [src_channel] [des_guild] [des_guild]                    | add a repost configuration (send to a channel)                             |
+| /repost add_webhook [src_channel] [des_webhook]                              | add a repost configuration (send to a webhook)                             |
+| /repost remove [repost_id]                                                   | remove a repost configuration                                              |
+| /repost enable [repost_id]                                                   | enable a repost configuration (if it is disabled)                          |
+| /repost disable [repost_id]                                                  | temporary disable a repost configuration                                   |
+| /repost update_source_allows [repost_id] [users] [bots] [webhooks]           | allow reposting of messages from users/bots/webhooks                       |
+| /repost update_source_allows [repost_id] [embeds] [components] [attachments] | include embeds/components/attachments in reposts                           |
+| /repost update_delay [repost_id] [delay]                                     | adds a delay before sending repost to destination (0 = realtime repost)    |
+| /repost update_mentions [repost_id] [mentions]                               | use this to add a mention (such as role or user) for reposted messages     |
+| /repost update_nickname [repost_id] [nickname]                               | toggle true if you want author nickname to be appended to reposted message |
+| /repost update_delete [repost_id] [delete]                                   | toggle true if you want bot to delete original message                     |
+| /repost update_pin [repost_id] [pin]                                         | pin reposted messages (not available for webhooks)                         |
+| /repost create_replacement [repost_id] [find] [replace]                      | find and replace the chosen find substring from message content            |
+| /repost delete_replacement [repost_id] [find]                                | delete replacement config                                                  |
