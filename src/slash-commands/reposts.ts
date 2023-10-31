@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { PermissionFlagsBits, SlashCommandBuilder, channelMention, inlineCode } from "discord.js";
 import { SlashCommand } from "../types";
 
 const command: SlashCommand = {
@@ -7,7 +7,22 @@ const command: SlashCommand = {
         .setDescription("view reposts configurations from this server")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     execute: async (interaction) => {
-        await interaction.reply("pong!");
+        await interaction.deferReply({ ephemeral: true });
+
+        const reposts = await interaction.client.prisma.repost.findMany({
+            where: {
+                sourceGuildID: interaction.guildId!
+            },
+            orderBy: {
+                sourceChannelID: "asc"
+            }
+        });
+
+        let text = ``;
+        for (const repost of reposts) {
+            text += `\n ${channelMention(repost.sourceChannelID)} - ${inlineCode(repost.cuid)}`;
+        }
+        await interaction.editReply({ content: text });
     }
 };
 
