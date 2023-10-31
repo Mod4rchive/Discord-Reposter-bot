@@ -13,7 +13,7 @@ config();
 import path from "path";
 import fs from "fs";
 import chalk from "chalk";
-import { clientID, guildID } from "./config";
+import { clientID } from "./config";
 import { PrismaClient } from "@prisma/client";
 import NodeCache from "node-cache";
 
@@ -68,7 +68,7 @@ const rest = new REST().setToken(process.env.TOKEN);
             `${client.chalk.magenta("[index]:")} started refreshing ${commands.length} application (/) commands.`
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data: any = await rest.put(Routes.applicationGuildCommands(clientID, guildID), {
+        const data: any = await rest.put(Routes.applicationCommands(clientID), {
             body: commands
         });
         console.log(
