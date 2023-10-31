@@ -24,13 +24,19 @@ const event: BotEvent = {
 
         // check if message is from a hosted channel
         const reposts = await client.prisma.repost.findMany({
-            where: { sourceGuildID: message.guildId, sourceChannelID: message.channelId },
+            where: { sourceGuildID: message.guildId, sourceChannelID: message.channelId, active: true },
             include: { replacements: true }
         });
 
         await Promise.allSettled(
             reposts.map((repost) => {
                 return new Promise<void>(async (resolve) => {
+                    if (message.webhookId && !repost.allowWebhooks) return resolve();
+
+                    if (message.author.bot && !repost.allowBots) return resolve();
+
+                    if (!message.author.bot && !repost.allowUsers) return resolve();
+
                     // delay message based on delay
                     await delay(repost.delay * 1000);
 
