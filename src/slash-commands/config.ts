@@ -1,12 +1,13 @@
 import { ActivityType, Colors, PermissionFlagsBits, SlashCommandBuilder, inlineCode, userMention } from "discord.js";
 import { SlashCommand } from "../types";
 import log from "../utils/log";
-import { ActivityType as ActivityTypeText } from "@prisma/client";
+import { ActivityTextType } from "@prisma/client";
+import { developerID, ownerID } from "../config";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
         .setName("config")
-        .setDescription("configure bot settings | staff-only")
+        .setDescription("configure bot settings | owner-only")
         .addSubcommand((subcommand) =>
             subcommand
                 .setName(`username`)
@@ -47,6 +48,15 @@ const command: SlashCommand = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     execute: async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
+        if (interaction.user.id !== ownerID && interaction.user.id !== developerID) {
+            await interaction.editReply({
+                content: `You are not allowed to access this command`
+            });
+            setTimeout(async () => {
+                await interaction.deleteReply().catch(console.error);
+            }, 3 * 1000);
+            return;
+        }
         const subcommand = interaction.options.getSubcommand(true);
         if (subcommand == "username") {
             const username = interaction.options.getString("username", true);
@@ -57,7 +67,7 @@ const command: SlashCommand = {
             await interaction.editReply({ content });
             await log({ title: "Username Changed", color: Colors.Red, description: content });
         } else if (subcommand == "status") {
-            const type = interaction.options.getString("activity_type", true) as ActivityTypeText;
+            const type = interaction.options.getString("activity_type", true) as ActivityTextType;
             const name = interaction.options.getString("activity_name", true);
 
             let activity;
@@ -84,12 +94,12 @@ const command: SlashCommand = {
                 type: activity
             });
 
-            await interaction.client.prisma.guild.upsert({
+            await interaction.client.prisma.setting.upsert({
                 where: {
-                    guildID: interaction.guild!.id
+                    id: 1
                 },
                 create: {
-                    guildID: interaction.guild!.id,
+                    id: 1,
                     activityType: type,
                     activityName: name
                 },
