@@ -25,9 +25,16 @@ enum ActivityTextType {
   Competing
 }
 
+enum RepostType {
+  guild
+  dm
+}
+
 model Repost {
   cuid   String  @id @default(cuid())
   active Boolean @default(true)
+
+  type RepostType
 
   allowUsers    Boolean @default(true)
   allowBots     Boolean @default(true)

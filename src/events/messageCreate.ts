@@ -20,12 +20,11 @@ const event: BotEvent = {
         // dont read messages from same bot
         if (message.author.id == client.user!.id) return;
 
-        // repost only from guild messages
-        if (!message.guildId || !message.guild) return;
+        const sourceGuildID = message.guildId ? message.guildId : message.channelId;
 
         // check if message is from a hosted channel
         const reposts = await client.prisma.repost.findMany({
-            where: { sourceGuildID: message.guildId, sourceChannelID: message.channelId, active: true },
+            where: { sourceGuildID: sourceGuildID, sourceChannelID: message.channelId, active: true },
             include: { replacements: true }
         });
 
