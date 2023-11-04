@@ -6,7 +6,8 @@ import {
     Collection,
     GatewayIntentBits,
     Routes,
-    RESTPostAPIApplicationCommandsJSONBody
+    RESTPostAPIApplicationCommandsJSONBody,
+    Partials
 } from "discord.js";
 import { BotEvent, Button, SlashCommand } from "./types";
 config();
@@ -20,14 +21,14 @@ import NodeCache from "node-cache";
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.DirectMessages,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildEmojisAndStickers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildPresences,
-        GatewayIntentBits.GuildMessageReactions,
-        GatewayIntentBits.GuildVoiceStates
-    ]
+        GatewayIntentBits.GuildMessageReactions
+    ],
+    partials: [Partials.Channel, Partials.Message, Partials.Reaction]
 });
 
 // handle chalk
