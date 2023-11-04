@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 
 const command: SlashCommand = {
-    command: new SlashCommandBuilder().setName("help").setDescription("view bot commands"),
+    command: new SlashCommandBuilder().setName("help").setDescription("view bot commands").setDMPermission(true),
     execute: async (interaction) => {
         const commandsPath = __dirname;
         const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(`.js`));

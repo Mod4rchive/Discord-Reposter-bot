@@ -5,13 +5,14 @@ const command: SlashCommand = {
     command: new SlashCommandBuilder()
         .setName("reposts")
         .setDescription("view reposts configurations from this server")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(true),
     execute: async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
 
         const reposts = await interaction.client.prisma.repost.findMany({
             where: {
-                sourceGuildID: interaction.guildId!
+                sourceGuildID: interaction.guildId ? interaction.guildId : interaction.channelId
             },
             orderBy: {
                 sourceChannelID: "asc"

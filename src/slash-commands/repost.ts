@@ -1,31 +1,30 @@
 import {
-    ChannelType,
     EmbedBuilder,
     PermissionFlagsBits,
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
-    TextChannel,
     inlineCode,
     userMention
 } from "discord.js";
 import { SlashCommand } from "../types";
 import log from "../utils/log";
 import buildRepostText from "../utils/buildRepostText";
+import { RepostType } from "@prisma/client";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
         .setName("repost")
         .setDescription("commands related to a repost configuration from this server")
+        .setDMPermission(true)
         .addSubcommand(
             new SlashCommandSubcommandBuilder()
                 .setName(`add_channel`)
                 .setDescription(`add a repost configuration (channel)`)
-                .addChannelOption((option) =>
-                    option
-                        .setName("source")
-                        .setDescription("the source channel")
-                        .setRequired(true)
-                        .addChannelTypes(ChannelType.GuildText)
+                .addStringOption((option) =>
+                    option.setName("source_guild_id").setDescription("the source guild id").setRequired(true)
+                )
+                .addStringOption((option) =>
+                    option.setName("source_channel_id").setDescription("the source channel id").setRequired(true)
                 )
                 .addStringOption((option) =>
                     option.setName("destination_guild_id").setDescription("the destination guild id").setRequired(true)
@@ -41,12 +40,11 @@ const command: SlashCommand = {
             new SlashCommandSubcommandBuilder()
                 .setName(`add_webhook`)
                 .setDescription(`add a repost configuration (webhook)`)
-                .addChannelOption((option) =>
-                    option
-                        .setName("source")
-                        .setDescription("the page number")
-                        .setRequired(true)
-                        .addChannelTypes(ChannelType.GuildText)
+                .addStringOption((option) =>
+                    option.setName("source_guild_id").setDescription("the source guild id").setRequired(true)
+                )
+                .addStringOption((option) =>
+                    option.setName("source_channel_id").setDescription("the source channel id").setRequired(true)
                 )
                 .addStringOption((option) =>
                     option
@@ -202,16 +200,19 @@ const command: SlashCommand = {
         await interaction.deferReply({ ephemeral: true });
         const subcommand = interaction.options.getSubcommand(true);
         if (subcommand == "add_channel") {
-            const sourceChannel = interaction.options.getChannel("source", true) as TextChannel;
-            const sourceGuildID = sourceChannel.guildId;
-            const sourceChannelID = sourceChannel.id;
+            const sourceGuildID = interaction.options.getString("source_guild_id", true);
+            const sourceChannelID = interaction.options.getString("source_channel_id", true);
+
             const destinationGuildID = interaction.options.getString("destination_guild_id", true);
             const destinationChannelID = interaction.options.getString("destination_channel_id", true);
+
+            const type: RepostType = sourceGuildID !== sourceChannelID ? "guild" : "dm";
 
             const repost = await interaction.client.prisma.repost.create({
                 data: {
                     sourceGuildID,
                     sourceChannelID,
+                    type,
                     destinationType: "channel",
                     destinationGuildID,
                     destinationChannelID
@@ -224,15 +225,17 @@ const command: SlashCommand = {
             await interaction.editReply({ content });
             await log({ title: "Repost Added", color: "Green", content });
         } else if (subcommand == "add_webhook") {
-            const sourceChannel = interaction.options.getChannel("source", true) as TextChannel;
-            const sourceGuildID = sourceChannel.guildId;
-            const sourceChannelID = sourceChannel.id;
+            const sourceGuildID = interaction.options.getString("source_guild_id", true);
+            const sourceChannelID = interaction.options.getString("source_channel_id", true);
             const destinationWebhookURL = interaction.options.getString("destination_webhook_url", true);
+
+            const type: RepostType = sourceGuildID !== sourceChannelID ? "guild" : "dm";
 
             const repost = await interaction.client.prisma.repost.create({
                 data: {
                     sourceGuildID,
                     sourceChannelID,
+                    type,
                     destinationType: "webhook",
                     destinationWebhookURL
                 }

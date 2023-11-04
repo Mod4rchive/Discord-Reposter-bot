@@ -9,7 +9,8 @@ const command: SlashCommand = {
         .addAttachmentOption((option) =>
             option.setName("avatar").setDescription("the webhook avatar").setRequired(true)
         )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false),
     execute: async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const name = interaction.options.getString("name", true);

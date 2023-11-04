@@ -16,6 +16,7 @@ const command: SlashCommand = {
                     option.setName("username").setDescription("new bot username").setRequired(true)
                 )
         )
+        .setDMPermission(false)
         .addSubcommand((subcommand) =>
             subcommand
                 .setName(`status`)
