@@ -2,6 +2,7 @@ import {
     ActionRow,
     Attachment,
     Client,
+    DMChannel,
     Embed,
     Events,
     Message,
@@ -94,6 +95,27 @@ const event: BotEvent = {
                                 msg = await channel.send({ components, embeds, files });
                             } else {
                                 msg = await channel.send({ content, components, embeds, files });
+                            }
+                            if (repost.pinMessages && msg.pinnable) await msg.pin().catch(console.error);
+                        } else if (repost.destinationType == "dm") {
+                            // establish destination
+                            const channel = await client.channels.fetch(repost.destinationChannelID!, { force: true });
+
+                            if (!channel) throw Error("invalid DM channel");
+
+                            const dmChannel = channel as DMChannel;
+
+                            // add nickname for member messages
+                            if (repost.nickname && !message.webhookId) {
+                                const nickname = `${userMention(message.author.id)}`;
+                                content = `${nickname}\n${content}`;
+                            }
+
+                            let msg: Message;
+                            if (content == "") {
+                                msg = await dmChannel.send({ components, embeds, files });
+                            } else {
+                                msg = await dmChannel.send({ content, components, embeds, files });
                             }
                             if (repost.pinMessages && msg.pinnable) await msg.pin().catch(console.error);
                         } else if (repost.destinationType == "webhook") {

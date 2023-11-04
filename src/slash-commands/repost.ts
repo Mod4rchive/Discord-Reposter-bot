@@ -9,7 +9,7 @@ import {
 import { SlashCommand } from "../types";
 import log from "../utils/log";
 import buildRepostText from "../utils/buildRepostText";
-import { RepostType } from "@prisma/client";
+import { DestinationType, RepostType } from "@prisma/client";
 
 const command: SlashCommand = {
     command: new SlashCommandBuilder()
@@ -207,13 +207,14 @@ const command: SlashCommand = {
             const destinationChannelID = interaction.options.getString("destination_channel_id", true);
 
             const type: RepostType = sourceGuildID !== sourceChannelID ? "guild" : "dm";
+            const destinationType: DestinationType = destinationGuildID !== destinationChannelID ? "channel" : "dm";
 
             const repost = await interaction.client.prisma.repost.create({
                 data: {
                     sourceGuildID,
                     sourceChannelID,
                     type,
-                    destinationType: "channel",
+                    destinationType,
                     destinationGuildID,
                     destinationChannelID
                 }

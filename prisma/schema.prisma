@@ -84,4 +84,5 @@ model Replacement {
 enum DestinationType {
   channel
   webhook
+  dm
 }
