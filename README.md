@@ -79,6 +79,12 @@ pnpm dev
 
 6. Once testing is done, run bot via docker command
 
+```bash
+docker build . --tag <username>/<image>
+docker run -d --name <app> --network=<network> --env-file ./.env <username>/<image>
+
+```
+
 ## How it works
 
 The bot sets up **repost configurations** that dictate a repost setup from a _source_ (a text channel) to a _destination_ (such as text channel from same or different server OR a discord webhook). There can be multiple repost configurations, allowing complex setups of `CHANNEL_A` -> `CHANNEL_B` reposting
