@@ -85,6 +85,8 @@ The bot sets up **repost configurations** that dictate a repost setup from a _so
 
 The project leverages the [messageCreate](https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=e-messageCreate) event in discord. It then uses the metadata from the **repost config** to filter out data such as allow only from users/bots and to allow only embeds/components/etc. and other configurations.
 
+In order to support DMs with users a _source_ and _destination_, the config's `guildID` and `channelID` would be set to the DM's `channelID`, the system recognizes this automatically to instead looking for a channel in the server, looks for the user DMs channel from the list of user channels available to the bot client
+
 ![sample configuration](public/repost_view.png)
 
 ## Commands
@@ -93,10 +95,10 @@ The project leverages the [messageCreate](https://discord.js.org/#/docs/discord.
 | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | /channelinfo                                                                 | get guild ID and channel ID for this channel                               |
 | /webhook                                                                     | creates a webhook in this channel                                          |
-| /reposts                                                                     | view repost configurations in this server                                  |
+| /reposts                                                                     | view repost configurations in this server/user                             |
 | /repost view [repost_id]                                                     | view a repost configuration                                                |
-| /repost add_channel [src_channel] [des_guild] [des_guild]                    | add a repost configuration (send to a channel)                             |
-| /repost add_webhook [src_channel] [des_webhook]                              | add a repost configuration (send to a webhook)                             |
+| /repost add_channel [src_guild] [src_channel] [des_guild] [des_channel]      | add a repost configuration (send to a channel/user from a channel/user)    |
+| /repost add_webhook [src_guild] [src_channel] [des_webhook]                  | add a repost configuration (send to a webhook from a channel/user)         |
 | /repost remove [repost_id]                                                   | remove a repost configuration                                              |
 | /repost enable [repost_id]                                                   | enable a repost configuration (if it is disabled)                          |
 | /repost disable [repost_id]                                                  | temporary disable a repost configuration                                   |
