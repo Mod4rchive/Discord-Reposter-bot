@@ -6,7 +6,6 @@ RUN corepack enable
 COPY . /app
 WORKDIR /app
 
-
 RUN pnpm i -g prisma
 
 FROM base AS prod-deps
