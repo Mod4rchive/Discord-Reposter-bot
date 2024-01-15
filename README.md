@@ -39,7 +39,7 @@ In order to work with this bot, one needs sufficient knowledge in Javascript/ Ty
 
 ```bash
 docker network create reposter
-docker run --name reposter-db -e --network=reposter POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+docker run --name reposter-db -e --network=reposter -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
 docker network inspect reposter // get ip address of container
 ```
 
@@ -83,11 +83,14 @@ pnpm dev
 docker build . --tag <username>/<image>
 docker run -d --name <app> --network=<network> --env-file ./.env <username>/<image>
 
+docker build . --tag lastation/reposter
+docker run -d --name reposter --network reposter --env-file ./.env lastation/reposter
+
 ```
 
 ## How it works
 
-The bot sets up **repost configurations** that dictate a repost setup from a _source_ (a text channel) to a _destination_ (such as text channel from same or different server OR a discord webhook). There can be multiple repost configurations, allowing complex setups of `CHANNEL_A` -> `CHANNEL_B` reposting
+The bot sets up **repost configurations** that dictate a repost setup from a _source_ (a text channel) to a _destination_ (such as text channel from same or different server OR a discord webhook). There can be multiple repost configurations, allowing complex setups of `CHANNEL_A` -> `CHANNEL_B` repostingd
 
 The project leverages the [messageCreate](https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=e-messageCreate) event in discord. It then uses the metadata from the **repost config** to filter out data such as allow only from users/bots and to allow only embeds/components/etc. and other configurations.
 
