@@ -40,6 +40,7 @@ declare global {
             TOKEN: string;
             DATABASE_URL: string;
             LOGS_URL: string;
+            CLIENT_ID: string;
         }
     }
 }
