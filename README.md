@@ -64,7 +64,10 @@ pnpm add -g pm2
 ```bash
 pnpm install
 ```
-
+3.5. Populate database with prisma scheme
+```bash
+npx prisma migrate dev --name init
+```
 4. Ensure that the PostgreSQL database is running and available `pnpm db-studio`
 
 ```bash
