@@ -64,32 +64,49 @@ pnpm add -g pm2
 ```bash
 pnpm install
 ```
-3.5. Populate database with prisma scheme
+4. Populate database with prisma scheme
+
 ```bash
 npx prisma migrate dev --name init
 ```
-4. Ensure that the PostgreSQL database is running and available `pnpm db-studio`
+5. Ensure that the PostgreSQL database is running and available `pnpm db-studio`
 
 ```bash
 pnpm db-studio
 ```
 
-5. Run `pnpm dev` to test and ensure that the bot works well
+6. Run `pnpm dev` to test and ensure that the bot works well
 
 ```bash
 pnpm dev
 ```
 
-6. Once testing is done, run bot via docker command
+6. Once testing is done, run bot via systemctl service
 
 ```bash
-docker build . --tag <username>/<image>
-docker run -d --name <app> --network=<network> --env-file ./.env <username>/<image>
+pnpm start
+```
 
-docker build . --tag lastation/reposter
-docker run -d --name reposter --network reposter --env-file ./.env lastation/reposter
+7. Create service using "sudo nano /etc/systemd/system/Discord-Reposter-bot.service"
+```bash
+[Unit]
+Description=Discord-Reposter-bot
+Requires=network.target
+After=network.target
+
+[Service]
+User=<user>
+Group=<user>
+Type=simple
+ExecStart=/home/<user>/.nvm/versions/node/v18.20.7/bin/pnpm start
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
 
 ```
+
 
 ## How it works
 
