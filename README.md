@@ -38,9 +38,7 @@ In order to work with this bot, one needs sufficient knowledge in Javascript/ Ty
 -   Deploy it via Docker:
 
 ```bash
-docker network create reposter
-docker run --name reposter-db -e --network=reposter -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
-docker network inspect reposter // get ip address of container
+docker run --name reposter-db -e POSTGRES_PASSWORD=somepassword --restart=on-failure -v /home/<user>/Discord-Reposter-bot/data_db:/var/lib/postgresql/data -d -p 5432:5432 postgres
 ```
 
 2. Save `DATABASE_URL` in the `.env`
